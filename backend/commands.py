@@ -1,5 +1,6 @@
 import click
 from backend import app, db
+from clouseau import versions
 
 
 @app.cli.command()
@@ -14,11 +15,9 @@ def initdb():
     click.echo('Add a demo analysis')
     from backend.models import BugAnalysis
     ba = BugAnalysis('demo')
-    release_version = '47' # TODO: use a tool for that
-    beta_version = '48'
-    aurora_version = '49'
-    central_version  = '50'
-    ba.parameters = "v4=affected&o5=equals&f1=cf_status_firefox" + central_version + "&o3=equals&v3=affected&o1=equals&j2=OR&resolution=---&resolution=FIXED&f4=cf_status_firefox" + beta_version + "&v5=affected&query_format=advanced&f3=cf_status_firefox" + aurora_version + "&f2=OP&o4=equals&f5=cf_status_firefox" + release_version + "&v1=fixed&f7=CP"
+
+    all_versions = { k : v[:v.index('.')] for k, v in versions.get().items() } # use major versions
+    ba.parameters = "v4=affected&o5=equals&f1=cf_status_firefox{nightly}&o3=equals&v3=affected&o1=equals&j2=OR&resolution=---&resolution=FIXED&f4=cf_status_firefox{beta}&v5=affected&query_format=advanced&f3=cf_status_firefox{aurora}&f2=OP&o4=equals&f5=cf_status_firefox{release}&v1=fixed&f7=CP".format(**all_versions)
 
     db.session.add(ba)
     db.session.commit()
