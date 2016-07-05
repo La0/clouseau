@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from backend import db
 import datetime
+import json
 
 # M2M link between analysis & bug
 bugs = db.Table('analysis_bugs',
@@ -26,7 +27,7 @@ class BugAnalysis(db.Model):
         self.name = name
 
     def __repr__(self):
-        return '<AnalysisTemplate %r>' % self.name
+        return 'AnalysisTemplate {}'.format(self.name)
 
 
 class BugResult(db.Model):
@@ -43,4 +44,10 @@ class BugResult(db.Model):
         self.bugzilla_id = bugzilla_id
 
     def __repr__(self):
-        return '<BugResult %r>' % self.bugzilla_id
+        return 'BugResult {}'.format(self.bugzilla_id)
+
+    @property
+    def payload_data(self):
+        if not self.payload:
+            return None
+        return json.loads(self.payload)
