@@ -4,7 +4,8 @@ import datetime
 import json
 
 # M2M link between analysis & bug
-bugs = db.Table('analysis_bugs',
+bugs = db.Table(
+    'analysis_bugs',
     db.Column('analysis_id', db.Integer, db.ForeignKey('bug_analysis.id')),
     db.Column('bug_id', db.Integer, db.ForeignKey('bug_result.id'))
 )

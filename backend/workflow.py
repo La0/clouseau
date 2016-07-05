@@ -8,6 +8,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
+
 class AnalysisWorkflow(object):
     """
     Update all analysis data
@@ -33,7 +34,6 @@ class AnalysisWorkflow(object):
             analysis.bugs[:] = bugs
             db.session.commit()
 
-
     def list_bugs(self, analysis):
         """
         List all the bugs in an analysis
@@ -51,7 +51,6 @@ class AnalysisWorkflow(object):
         bz.get_data().wait()
 
         return bugs
-
 
     def update_bug(self, bug):
         """
@@ -79,8 +78,8 @@ class AnalysisWorkflow(object):
             return
 
         payload = {
-            'bug' : bug,
-            'analysis' : analysis,
+            'bug': bug,
+            'analysis': analysis,
         }
         payload_json = json.dumps(payload)
 
