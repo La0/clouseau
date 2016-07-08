@@ -1,12 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import logging
+from flask_cors import CORS
 
 # Setup app
 app = Flask('clouseau_backend')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./dev.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True  # warning
 db = SQLAlchemy(app)
+
+# Enable CORS requests
+CORS(app)
 
 # Expose commands, api & models
 from backend.commands import initdb
