@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from backend import db
 import datetime
-import json
+import pickle
 
 # M2M link between analysis & bug
 bugs = db.Table(
@@ -38,6 +38,7 @@ class BugResult(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bugzilla_id = db.Column(db.Integer, unique=True)
     payload = db.Column(db.Text())
+    payload_hash = db.Column(db.String(40))
 
     created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
@@ -51,4 +52,4 @@ class BugResult(db.Model):
     def payload_data(self):
         if not self.payload:
             return None
-        return json.loads(self.payload)
+        return pickle.loads(self.payload)

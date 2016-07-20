@@ -26,6 +26,6 @@ def analysis(analysis_id):
             'id': b.id,
             'bugzilla_id': b.bugzilla_id,
             'payload': b.payload_data,
-        } for b in analysis.bugs],
+        } for b in analysis.bugs if b.payload],
     }
     return jsonify(out)

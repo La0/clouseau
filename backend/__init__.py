@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from flask_cors import CORS
 
+
 # Setup app
 app = Flask('clouseau_backend')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./dev.db'
@@ -15,7 +16,12 @@ CORS(app)
 # Expose commands, api & models
 from backend.commands import initdb
 from backend.models import BugAnalysis, BugResult
+from backend.serializers import TimedeltaJSONEncoder
 from backend import api
+
+# Use our default serializer
+app.json_encoder = TimedeltaJSONEncoder
+
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)

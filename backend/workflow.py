@@ -1,10 +1,11 @@
 from backend.models import BugAnalysis, BugResult
 from backend import db
+from backend.helpers import compute_dict_hash
 from clouseau.bugzilla import Bugzilla
 from clouseau.patchanalysis import bug_analysis
 from sqlalchemy.orm.exc import NoResultFound
 import logging
-import json
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +63,19 @@ class AnalysisWorkflow(object):
             logger.warn('Bug {} already processed.'.format(bug_id))
             return self.bugs[bug_id]
 
+        # Compute the hash of the new bug
+        bug_hash = compute_dict_hash(bug)
+
         # Fetch or create existing bug result
         try:
             br = BugResult.query.filter_by(bugzilla_id=bug_id).one()
             logger.info('Update existing {}'.format(br))
+
+            # Check the bug has changed since last update
+            if br.payload_hash == bug_hash:
+                logger.info('Same bug hash, skip bug analysis {}'.format(br))
+                return
+
         except NoResultFound:
             br = BugResult(bug_id)
             logger.info('Create new {}'.format(br))
@@ -81,14 +91,12 @@ class AnalysisWorkflow(object):
             'bug': bug,
             'analysis': analysis,
         }
-        payload_json = json.dumps(payload)
-
-        # Check payload changed
-        # TODO
+        br.payload = pickle.dumps(payload, 2)
+        br.payload_hash = bug_hash
 
         # Save payload
-        br.payload = payload_json
         db.session.add(br)
+        db.session.commit()
         logger.info('Updated payload of {}'.format(br))
 
         # Save in local cache
