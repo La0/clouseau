@@ -28,4 +28,5 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Routing
 app.add_url_rule('/', view_func=api.home)
-app.add_url_rule('/analysis/<analysis_id>/', view_func=api.analysis)
+app.add_url_rule('/analysis/', view_func=api.analysis_list)
+app.add_url_rule('/analysis/<analysis_id>/', view_func=api.analysis_details)
